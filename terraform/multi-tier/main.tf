@@ -67,6 +67,10 @@ resource "vsphere_virtual_machine" "db" {
   memory   = var.db_memory
   guest_id = data.vsphere_virtual_machine.template.guest_id
 
+  # Inherit firmware and controller type from the template. Without the
+  # firmware line the provider defaults to BIOS, and an EFI template then
+  # fails to power on with "ACPI motherboard layout requires EFI".
+  firmware  = data.vsphere_virtual_machine.template.firmware
   scsi_type = data.vsphere_virtual_machine.template.scsi_type
 
   network_interface {
@@ -112,6 +116,10 @@ resource "vsphere_virtual_machine" "web" {
   memory   = var.web_memory
   guest_id = data.vsphere_virtual_machine.template.guest_id
 
+  # Inherit firmware and controller type from the template. Without the
+  # firmware line the provider defaults to BIOS, and an EFI template then
+  # fails to power on with "ACPI motherboard layout requires EFI".
+  firmware  = data.vsphere_virtual_machine.template.firmware
   scsi_type = data.vsphere_virtual_machine.template.scsi_type
 
   network_interface {
