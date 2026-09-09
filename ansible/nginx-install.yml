@@ -21,12 +21,19 @@
           cloud={{ morpheus.cloud.name | default('n/a') }}
           user={{ morpheus.user.username | default('n/a') }}
 
+    # A freshly booted Ubuntu image runs unattended-upgrades, which holds the
+    # dpkg lock. Wait for it rather than failing the build.
     - name: Install NGINX
       ansible.builtin.apt:
         name: nginx
         state: present
         update_cache: true
         cache_valid_time: 3600
+        lock_timeout: 300
+      register: nginx_install
+      until: nginx_install is succeeded
+      retries: 5
+      delay: 20
 
     - name: Publish the landing page
       ansible.builtin.template:
