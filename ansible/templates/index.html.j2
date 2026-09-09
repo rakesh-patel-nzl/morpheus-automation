@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>HPE Morpheus + Ansible</title>
+    <style>
+      body { font-family: system-ui, sans-serif; margin: 4rem; color: #182b3a; }
+      h1 { color: #01a982; }
+      td { padding: 0.2rem 1.5rem 0.2rem 0; }
+    </style>
+  </head>
+  <body>
+    <h1>{{ banner_message }}</h1>
+    <table>
+      <tr><td>Morpheus instance</td><td>{{ morpheus.instance.name | default('n/a') }}</td></tr>
+      <tr><td>Morpheus cloud</td><td>{{ morpheus.cloud.name | default('n/a') }}</td></tr>
+      <tr><td>Requested by</td><td>{{ morpheus.user.username | default('n/a') }}</td></tr>
+      <tr><td>Hostname</td><td>{{ inventory_hostname }}</td></tr>
+      <tr><td>IP address</td><td>{{ ansible_default_ipv4.address | default('n/a') }}</td></tr>
+      <tr><td>OS</td><td>{{ ansible_distribution }} {{ ansible_distribution_version }}</td></tr>
+      <tr><td>Configured at</td><td>{{ ansible_date_time.iso8601 | default('n/a') }}</td></tr>
+    </table>
+  </body>
+</html>

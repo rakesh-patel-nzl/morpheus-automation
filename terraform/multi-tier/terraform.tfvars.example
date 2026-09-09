@@ -1,0 +1,10 @@
+# Copy these into the TERRAFORM VARIABLES / tfvars box of the app blueprint,
+# or leave the box empty to accept the defaults in variables.tf.
+
+app_name   = "tf-shop"
+web_count  = 1
+web_memory = 2048
+db_memory  = 2048
+
+# Set to true only for Module 10.8
+configure_tiers = false

@@ -1,0 +1,43 @@
+---
+# Lab 9 - HPE Morpheus Enterprise: Automating with Ansible
+# Installs NGINX on the instance Morpheus is provisioning and publishes a
+# landing page built from variables Morpheus injected into the playbook run.
+- name: Install and configure NGINX
+  hosts: all
+  become: true
+  gather_facts: true
+
+  vars:
+    site_root: /var/www/html
+    # Overridden by an extra var when the playbook is run from a Morpheus
+    # operational workflow that has an input attached.
+    banner_message: "Provisioned by HPE Morpheus and configured by Ansible"
+
+  tasks:
+    - name: Show the Morpheus variable payload (teaching aid only)
+      ansible.builtin.debug:
+        msg: >-
+          instance={{ morpheus.instance.name | default('n/a') }}
+          cloud={{ morpheus.cloud.name | default('n/a') }}
+          user={{ morpheus.user.username | default('n/a') }}
+
+    - name: Install NGINX
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Publish the landing page
+      ansible.builtin.template:
+        src: templates/index.html.j2
+        dest: "{{ site_root }}/index.html"
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Ensure NGINX is running and starts at boot
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true

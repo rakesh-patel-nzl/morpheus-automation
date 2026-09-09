@@ -1,0 +1,26 @@
+---
+# Lab 9 - HPE Morpheus Enterprise: Automating with Ansible
+# Day-2 operational playbook. Rewrites the landing page banner using a value
+# the student types into a Morpheus input when running the workflow.
+- name: Update the web banner
+  hosts: all
+  become: true
+  gather_facts: true
+
+  vars:
+    site_root: /var/www/html
+    banner_message: "{{ morpheus.customOptions.bannerMessage | default('Updated by an Ansible operational workflow') }}"
+
+  tasks:
+    - name: Publish the updated landing page
+      ansible.builtin.template:
+        src: templates/index.html.j2
+        dest: "{{ site_root }}/index.html"
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Reload NGINX
+      ansible.builtin.service:
+        name: nginx
+        state: reloaded
